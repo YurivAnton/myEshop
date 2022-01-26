@@ -41,9 +41,16 @@
                 top: 18px;
             }
 
+            .form{
+                margin-left: auto;
+                margin-right: auto;
+            }
+
             .content {
                 /*border: 1px solid black;*/
                 width: 800px;
+                margin-left: auto;
+                margin-right: auto;
                 color: black;
                 text-align: center;
             }
