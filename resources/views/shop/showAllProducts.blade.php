@@ -1,5 +1,9 @@
 @extends('welcome')
 
+@section('order')
+    <a href="/order">{{ $countItems or ''}} order</a>
+@endsection
+
 @section('main')
 {{--{{ $test }}--}}
     <form action="" method="get">
@@ -30,6 +34,8 @@
         <th>Quantity</th>
         <th>Buy</th>
         {!! $result !!}
+        {{--{{ dump($products) }}
+        {{ dump($categories) }}--}}
     </table>
 
 @endsection

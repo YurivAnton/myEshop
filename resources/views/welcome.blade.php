@@ -69,6 +69,10 @@
                 text-transform: uppercase;
             }
 
+            #countItems{
+                border: 1px solid black;
+            }
+
             .m-b-md {
                 margin-bottom: 30px;
             }
@@ -80,8 +84,11 @@
                 <div class="top-right links">
                     @if (Auth::check())
                         <a href="{{ url('/home') }}">Home</a>
+                        <a href="/admin">admin</a>
                     @else
+                        @yield('order')
                         <a href="{{ url('/login') }}">Login</a>
+
 <!--                        <a href="{{ url('/register') }}">Register</a>-->
                     @endif
                 </div>

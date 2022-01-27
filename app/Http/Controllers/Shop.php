@@ -5,15 +5,25 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class Shop extends Controller
 {
+    private $order;
+
+    public function __construct()
+    {
+        $this->order = DB::table('orders')->where('status', 0)->first();
+    }
+
     public function showAllProducts(Request $request)
     {
         $categories = Category::all();
         $products = Product::orderBy('category_id')->get();
         $minPrice = Product::min('price');
         $maxPrice = Product::max('price');
+
+        $countItems = DB::table('zakazTovar')->where('order_id', $this->order->id)->count();
 
         if ($request->has('sort')){
             if ($request->has('maxPrice')){
@@ -26,24 +36,16 @@ class Shop extends Controller
             $products = $this->sort($sortBy, $witchColumn, $price);
         }
 
-        if ($request->has('search')){
+        if ($request->has('search')) {
             $keyWord = trim($request->get('search'));
-
-            foreach ($categories as $category){
-                if ($category->name == $keyWord){
-                    $categories = Category::where('name', '=', $keyWord)
-                        ->get();
-                }else{
-                    $products = Product::where('category_id', '=', $category->id)->get();
-                    foreach ($products as $product){
-                        if ($product->name == $keyWord){
-                            $products = Product::where('name', '=', $keyWord)
-                                ->orWhere('name', '=', lcfirst($keyWord))
-                                ->orWhere('name', '=', ucfirst($keyWord))
-                                ->get();
-                        }
-                    }
-                }
+            $searchProduct = Product::where('name', '=', $keyWord)->get();
+            $searchCategory = Category::where('name', '=', $keyWord)->get();
+            if (!empty($searchProduct)){
+                $products = $searchProduct;
+                $categories = Category::all();
+            }elseif (!empty($searchCategory)){
+                $categories = $searchCategory;
+                $products = Category::where('name', '=', $keyWord)->first()->products;
             }
         }
 
@@ -68,13 +70,38 @@ class Shop extends Controller
                 $result .= '</tr>';
             }
         }
+
         return view('shop.showAllProducts', [
             'products'=>$products,
             'categories'=>$categories,
             'result'=>$result,
             'minPrice'=>$minPrice,
-            'maxPrice'=>$maxPrice
+            'maxPrice'=>$maxPrice,
+            'countItems'=>$countItems
         ]);
+    }
+
+    public function order(Request $request)
+    {
+        $order = DB::table('orders')
+            ->join('zakazTovar', 'orders.id', '=', 'zakazTovar.order_id')
+            ->join('products', 'products.id', '=', 'zakazTovar.product_id')
+            ->select('orders.ordersNumber', 'zakazTovar.quantity', 'products.name', 'products.price')
+            ->get();
+
+        $result = '';
+        foreach ($order as $item){
+            $result .= '<tr>';
+            $result .= '<td>'.$item->ordersNumber.'</td>';
+            $result .= '<td>'.$item->name.'</td>';
+            $result .= '<td>'.$item->quantity.'</td>';
+            $result .= '<td>'.$item->price.'</td>';
+            $result .= '<td>'.$item->quantity * $item->price.'</td>';
+
+
+
+        }
+        return view('shop.order', ['order'=>$order, 'result'=>$result]);
     }
 
     private function sort($sortBy, $witchColumn, $price)
