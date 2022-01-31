@@ -1,8 +1,9 @@
 @extends('welcome')
 
 @section('menu')
-    <li><a href="/order">{{ $countItems or ''}} order</a></li>
-    <li><a href="/admin">admin</a></li>
+    <li><a href="/">HOME</a></li>
+    <li><a href="/admin/orders">Show all orders</a></li>
+    <li><a href="/admin">Show all products</a></li>
 @endsection
 
 @section('aside')
@@ -56,6 +57,45 @@
 @endsection
 
 @section('main')
+    @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="/add" method="get">
+        <label>
+            <p>
+                Type new product name<br>
+                <input name="newProductName">
+            </p>
+        </label>
+            <p>
+                <label>Select category Name</label><br>
+                {!! $selectCategory !!}
+            </p>
+        Or<br>
+        <label>
+            <p>
+                Type new category name<br>
+                <input name="newCategoryName">
+            </p>
+        </label><br>
+        <label>
+            <p>
+                Type price<br>
+                <input name="price">
+            </p>
+        </label>
+        <p>
+            <input type="submit" name="addNew" value="addNew">
+        </p>
+    </form>
+
     <table class="table table-striped table-bordered">
         <caption>
             <form role="search">
@@ -73,8 +113,7 @@
             <th>Name</th>
             <th>Category</th>
             <th>Price</th>
-            <th>Quantity</th>
-            <th>Buy</th>
+            <th>Delete</th>
         </thead>
         <tbody>
             {!! $result !!}
