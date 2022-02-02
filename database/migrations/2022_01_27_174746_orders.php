@@ -18,6 +18,7 @@ class Orders extends Migration
             $table->integer('ordersNumber');
             $table->dateTime('date');
             $table->integer('status');
+            $table->integer('user_id');
         });
     }
 

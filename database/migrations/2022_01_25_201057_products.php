@@ -18,6 +18,8 @@ class Products extends Migration
             $table->string('name');
             $table->integer('price');
             $table->integer('category_id');
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
         });
     }
 
