@@ -1,8 +1,23 @@
-@extends('welcome')
+@extends('layouts.layout')
 
 @section('menu')
-    <li><a href="/">HOME</a></li>
-    <li><a href="/admin">admin</a></li>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main1">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-main1">
+            <ul class="nav navbar-nav">
+                <li><a href="/">HOME</a></li>
+                <li><a href="/admin">admin</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
 @endsection
 
 @section('main')

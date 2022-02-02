@@ -57,7 +57,23 @@ class Shop extends Controller
             $result .= '<tr>';
             foreach ($this->categories as $category) {
                 if ($category->id == $product->category_id) {
-                    $result .= '<td>' . $product->name . '</td>';
+                    $result .= '<form action="/add" method="get">';
+                    $result .= '<td style="padding: 0"><input size="1" type="text" name="productName" value="' . $product->name . '" class="form-control" disabled="disabled"></td>';
+                    $result .= '<td style="padding: 0"><input size="1" type="text" name="categoryName" value="' . $category->name . '" class="form-control" disabled="disabled"></td>';
+                    $result .= '<td style="padding: 0"><input size="1" type="text" name="productPrice" value="' . $product->price . '" class="form-control" disabled="disabled"></td>';
+                    $result .= '<td style="padding: 0"><input size="1" type="text" name="quantity" class="form-control"></td>';
+                    $result .= '<input type="hidden" name="productId" value="' . $product->id . '">';
+                    $result .= '<td style="padding: 0"><input size="1" type="submit" name="Buy" value="Buy" class="form-control"></td>';
+                    $result .= '</form>';
+
+
+
+
+
+
+
+
+                    /*$result .= '<td>' . $product->name . '</td>';
                     $result .= '<td>' . $category->name . '</td>';
                     $result .= '<td>' . $product->price . '</td>';
                     $result .= '<td>
@@ -70,7 +86,7 @@ class Shop extends Controller
                                     <td>
                                             <input type="submit" name="Buy" value="Buy">
                                         </form>
-                                    </td>';
+                                    </td>';*/
                 }
                 $result .= '</tr>';
             }
