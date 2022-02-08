@@ -1,25 +1,5 @@
 @extends('layouts.layout')
 
-@section('menu')
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main1">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar-main1">
-                <ul class="nav navbar-nav">
-                    <li><a href="/order">{{ $countItems or ''}} order</a></li>
-                    <li><a href="/admin">admin</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-@endsection
-
 @section('aside')
     <nav class="navbar navbar-default">
         <div class="container-fluid">
@@ -78,7 +58,7 @@
                     <input type="text" name="search" class="form-control" placeholder="search">
                     <span class="input-group-btn">
                         <button class="btn btn-info" type="submit">
-                            <i class="glyphicon glyphicon-search">search</i>
+                            <i class="glyphicon">search</i>
                         </button>
                     </span>
                 </div>
@@ -92,7 +72,22 @@
             <th>Buy</th>
         </thead>
         <tbody>
-            {!! $result !!}
+        @foreach($products as $product)
+            <tr>
+            @foreach($categories as $category)
+                @if ($category->id == $product->category_id)
+                    <form action="/add" method="get" role="form">
+                        <td style="padding: 0"><input type="text" name="productName" value="{{ $product->name }}" class="form-control" disabled="disabled"></td>
+                        <td style="padding: 0"><input type="text" name="categoryName" value="{{ $category->name }}" class="form-control" disabled="disabled"></td>
+                        <td style="padding: 0"><input type="text" name="productPrice" value="{{ $product->price }}" class="form-control" disabled="disabled"></td>
+                        <td style="padding: 0"><input size="1" type="text" name="quantity" class="form-control"></td>
+                        <input type="hidden" name="productId" value="{{ $product->id }}">
+                        <td style="padding: 0"><input size="1" type="submit" name="Buy" value="Buy" class="form-control"></td>
+                    </form>
+                @endif
+            </tr>
+            @endforeach
+        @endforeach
         </tbody>
     </table>
 @endsection

@@ -1,26 +1,5 @@
 @extends('layouts.layout')
 
-@section('menu')
-<nav class="navbar navbar-default">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main1">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <div class="collapse navbar-collapse" id="navbar-main1">
-            <ul class="nav navbar-nav">
-                <li><a href="/">HOME</a></li>
-                <li><a href="/admin/orders">Show all orders</a></li>
-                <li><a href="/admin">Show all products</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
-@endsection
-
 @section('aside')
     <nav class="navbar navbar-default">
         <div class="container-fluid">
@@ -82,35 +61,37 @@
         </div>
     @endif
 
-    <form action="/add" method="get">
-        <label>
-            <p>
-                Type new product name<br>
-                <input name="newProductName">
-            </p>
-        </label>
-            <p>
-                <label>Select category Name</label><br>
-                {!! $selectCategory !!}
-            </p>
-        Or<br>
-        <label>
-            <p>
-                Type new category name<br>
-                <input name="newCategoryName">
-            </p>
-        </label><br>
-        <label>
-            <p>
-                Type price<br>
-                <input name="price">
-            </p>
-        </label>
-        <p>
-            <input type="submit" name="addNew" value="addNew">
-        </p>
-    </form>
-
+    <div class="row">
+        <div class="col-xs-6 col-xs-offset-3 col-sm-8 col-md-9 col-lg-5 col-lg-offset-2">
+            <form role="form" action="/add" method="get">
+                <div class="form-group">
+                    <label for="product">Type new product name</label>
+                    <input name="newProductName" class="form-control" id="product" value="{{ old('newProductName') }}" placeholder="Type new product name">
+                </div>
+                <div class="form-group">
+                    <label for="oldCategory">Select category Name</label>
+                    <select name="oldCategoryName" id="oldCategory" class="form-control">
+                        @foreach($categories as $category)
+                            @if($category->name == old('oldCategoryName'))
+                                <option selected value="{{ $category->name }}">{{ $category->name }}</option>
+                            @else
+                                <option value="{{ $category->name }}">{{ $category->name }}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="newCategory">Or type new category name</label>
+                    <input name="newCategoryName" class="form-control" id="newCategory" placeholder="Type new category name">
+                </div>
+                <div class="form-group">
+                    <label for="price">Type price</label>
+                    <input name="price"  class="form-control" id="price" placeholder="Type the price">
+                </div>
+                <input name="addNew" type="submit" class="btn btn-success" value="addNew">
+            </form>
+        </div>
+    </div>
     <table class="table table-striped table-bordered">
         <caption>
             <form role="search">
@@ -118,7 +99,7 @@
                     <input type="text" name="search" class="form-control" placeholder="search">
                     <span class="input-group-btn">
                         <button class="btn btn-info" type="submit">
-                            <i class="glyphicon glyphicon-search">search</i>
+                            <i class="glyphicon">search</i>
                         </button>
                     </span>
                 </div>
@@ -126,12 +107,54 @@
         </caption>
         <thead>
             <th>Name</th>
-            <th>Category</th>
             <th>Price</th>
+            <th>Category</th>
             <th>Delete</th>
+            <th>Delete whole category</th>
         </thead>
         <tbody>
-            {!! $result !!}
+        @if(!empty($editId))
+            <form role="form" action="/edit" method="get">
+                <label for="{{ $editName }}">Edit</label>
+                <div class="input-group">
+                    <input type="text" name="name" class="form-control" id="{{ $editName }}" placeholder="{{ $editName }}">
+                    <input type="hidden" name="editingId" value="{{ $editId }}">
+                    <input type="hidden" name="editing" value="{{ $editing }}">
+                    <span class="input-group-btn">
+                <button class="btn btn-info" type="submit">
+                    <i class="glyphicon">edit</i>
+                </button>
+            </span>
+                </div>
+            </form>
+        @endif
+        @foreach($categories as $category)
+            @foreach($products as $product)
+                <tr>
+                    @if ($category->id == $product->category_id)
+                        <form action="/admin" method="get" role="form">
+                            <td style="padding: 0"><input type="submit" name="edit" value="{{ $product->name }}" class="form-control"></td>
+                            <input type="hidden" name="productId" value="{{ $product->id }}">
+                        </form>
+
+                        <form action="/admin" method="get" role="form">
+                            <td style="padding: 0"><input type="submit" name="edit" name="productPrice" value="{{ $product->price }}" class="form-control"></td>
+                            <input type="hidden" name="priceId" value="{{ $product->id }}">
+                        </form>
+                        <form action="/admin" method="get" role="form">
+                            <td style="padding: 0"><input type="submit" name="edit" value="{{ $category->name }}" class="form-control"></td>
+                            <input type="hidden" name="categoryId" value="{{ $category->id }}">
+                        </form>
+                        <form action="/delete" method="get">
+                            <td style="padding: 0"><input size="1" type="submit" name="delete" value="deleteProduct" class="form-control"></td>
+                            <td style="padding: 0"><input size="1" type="submit" name="delete" value="Delete whole category {{ $category->name }}" class="form-control"></td>
+                            <input type="hidden" name="categoryId" value="{{ $category->id }}">
+                            <input type="hidden" name="deleteProductId" value="{{ $product->id }}">
+                        </form>
+                    @endif
+                </tr>
+            @endforeach
+            @endforeach
         </tbody>
     </table>
 @endsection

@@ -19,10 +19,31 @@
 <header class="page-header text-center">
     <h1>myEshop</h1>
 </header>
+<main>
+    @if (session('message'))
+        <div class="alert alert-success">
+            {{ session('message') }}
+        </div>
+    @endif
 <div class="container-fluid">
     <div class="row">
-        <div class="col-xs-6 col-sm-12">
-            @yield('menu')
+        <div class="col-xs-6 col-sm-12 col-md-12 col-lg-12">
+            <div>
+                <ul class="nav nav-pills">
+                    <li {!! $classActiveHome or '' !!}><a href="/">Home</a></li>
+                    <li {!! $classActiveOrder or '' !!}><a href="/order">Order<span class="badge">{{ $countItems or ''}}</span></a></li>
+                    <li {!! $classActiveAdmin or '' !!}class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/admin">Admin home</a></li>
+                            <li><a href="/admin/orders">Show all orders</a></li>
+                            <li><a href="/admin">Show all products</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">Examples</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
         <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
             @yield('aside')
@@ -32,6 +53,7 @@
         </div>
     </div>
 </div>
+</main>
 <footer class="text-center">
     created by Yuriv Anton
 </footer>

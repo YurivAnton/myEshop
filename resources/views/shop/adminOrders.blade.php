@@ -1,26 +1,5 @@
 @extends('layouts.layout')
 
-@section('menu')
-<nav class="navbar navbar-default">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main1">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <div class="collapse navbar-collapse" id="navbar-main1">
-            <ul class="nav navbar-nav">
-                <li><a href="/">HOME</a></li>
-                <li><a href="/admin/orders">Show all orders</a></li>
-                <li><a href="/admin">Show all products</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
-@endsection
-
 @section('aside')
     <nav class="navbar navbar-default">
         <div class="container-fluid">
@@ -33,7 +12,9 @@
             </div>
             <div class="collapse navbar-collapse" id="navbar-main">
                     <ol>
-                        {!! $li !!}
+                        @foreach($orders as $order)
+                            <li><a href="/admin/orders?ordersNumber={{ $order->ordersNumber }}&orderId={{ $order->id }}">{{ $order->ordersNumber }}</a></li>
+                        @endforeach
                     </ol>
             </div>
         </div>
@@ -52,7 +33,19 @@
             <th>Sum</th>
         </thead>
         <tbody>
-            {!! $result !!}
+            @foreach($quantity as $elem)
+                @foreach($showOrder as $item)
+                    @if($elem->product_id == $item->id)
+                        <tr>
+                            <td style="padding: 0"><input type="text" name="productName" value="{{ $item->name }}" class="form-control" disabled="disabled"></td>
+                            <td style="padding: 0"><input type="text" name="quantity" value="{{ $elem->quantity }}" class="form-control" disabled="disabled"></td>
+                            <td style="padding: 0"><input type="text" name="price" value="{{ $item->price }}" class="form-control" disabled="disabled"></td>
+                            <td style="padding: 0"><input type="text" name="sum" value="{{ $item->price * $elem->quantity}}" class="form-control" disabled="disabled"></td>
+                        </tr>
+                        @php break; @endphp
+                    @endif
+                @endforeach
+            @endforeach
         </tbody>
     </table>
 @endsection
